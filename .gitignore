@@ -7,4 +7,4 @@ src/composer.json
 src/composer.lock
 src/.phpunit.result.cache
 src/tests/
-src/ruleSets/
+src/configurations/

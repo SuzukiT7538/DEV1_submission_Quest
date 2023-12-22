@@ -32,16 +32,27 @@ class Game
 
     private function calcPoints(Player $player, Card $drewCard): void
     {
-        $player->points += $drewCard->point;
+        $player->calcPointArray[] = $drewCard->point;
+        $player->totalPoints = array_sum($player->calcPointArray);
+        $aceCard = array_search(1, $player->calcPointArray);
+        if ($aceCard && ($player->totalPoints + 10) <=  21) {
+            $player->calcPointArray[$aceCard] = 11;
+            $player->totalPoints = array_sum($player->calcPointArray);
+        }
+        $aceCard = array_search(11, $player->calcPointArray);
+        if ($aceCard && $player->totalPoints > 21) {
+            $player->calcPointArray[$aceCard] = 1;
+            $player->totalPoints = array_sum($player->calcPointArray);
+        }
     }
 
     private function judgeBust(Player $player): void
     {
-        if ($player->points > Game::BUST_LINE) {
+        if ($player->totalPoints > Game::BUST_LINE) {
             $player->status = 'busted';
-            $player->points = 0;
+            $player->totalPoints = 0;
             echo 'bustしました' . PHP_EOL;
-        } elseif ($player->points === 21) {
+        } elseif ($player->totalPoints === 21) {
             echo $player->status = 'black jack' . PHP_EOL;
         }
     }
@@ -50,7 +61,7 @@ class Game
     {
         echo $player->name;
         if ($player->status === 'live') {
-            echo 'のポイントは' . $player->points . 'です';
+            echo 'のポイントは' . $player->totalPoints . 'です';
         } elseif ($player->status === 'black jack') {
             echo 'はBlack Jackです!';
         } elseif ($player->status === 'busted') {
@@ -62,12 +73,12 @@ class Game
     public function judgeResult(Player $dealer, Player $player): void
     {
         $winner = '';
-        if ($dealer->points > $player->points) {
+        if ($dealer->totalPoints > $player->totalPoints) {
             $winner = $dealer->name;
-        } elseif ($dealer->points < $player->points) {
+        } elseif ($dealer->totalPoints < $player->totalPoints) {
             $winner = $player->name;
-        } elseif ($dealer->points === $player->points) {
-          echo '-PUSH-' . PHP_EOL;
+        } elseif ($dealer->totalPoints === $player->totalPoints) {
+            echo '-PUSH-' . PHP_EOL;
         }
         if ($winner) {
             echo $winner . ' WIN!!!!!' . PHP_EOL;

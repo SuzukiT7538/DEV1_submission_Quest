@@ -30,6 +30,7 @@ class Dealer extends Player
         }
         if (strcasecmp($choice, 'y') == 0) {
             $game->drawCards($deck, $this, 1);
+            $continue = true;
             if ($this->status !== 'live') {
                 $continue = false;
             }

@@ -17,10 +17,12 @@ class Game
             }
             $player->hands[] = $drewCard;
             unset($deck->pooledCards[$drewCardNumber]);
+            $this->calcPoints($player, $drewCard);
             if ($drawCount === 1) {
                 $this->showDrewCard($drewCard);
+                $this->showPoints($player);
             }
-            $this->calcPoints($player, $drewCard);
+            $this->judgeBust($player);
         }
     }
     private function showDrewCard(Card $drewCard): void
@@ -31,12 +33,10 @@ class Game
     private function calcPoints(Player $player, Card $drewCard): void
     {
         $player->points += $drewCard->point;
-        $this->judgeBust($player);
     }
 
     private function judgeBust(Player $player): void
     {
-        $this->showPoints($player);
         if ($player->points > Game::BUST_LINE) {
             $player->status = 'busted';
             $player->points = 0;

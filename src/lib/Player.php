@@ -7,9 +7,11 @@ require_once('Card.php');
 class Player
 {
     public array $hands = array();
-    public int $points = 0;
+    public array $calcPointArray = [0];
+    public int $totalPoints = 0;
     public string $status = 'live';
     public bool $hasA = false;
+
 
     public function __construct(public string $name)
     {

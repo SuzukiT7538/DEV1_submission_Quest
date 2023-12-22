@@ -22,7 +22,7 @@ class Dealer extends Player
 
     public function hitOrNo(Deck $deck, Game $game): bool
     {
-        if ($this->points < 17) {
+        if ($this->totalPoints < 17) {
             $choice = 'y';
         } else {
             echo 'ディーラーの得点が17点以上なので、ディーラーのターンを終了します。';

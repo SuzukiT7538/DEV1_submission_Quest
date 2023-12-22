@@ -39,7 +39,7 @@ $continue = true;
 while ($continue) {
     $continue = $dealer->hitOrNo($deck, $game);
 }
-echo 'カードが配り終わりました。' . PHP_EOL . PHP_EOL;
+echo 'カードを配り終わりました。' . PHP_EOL . PHP_EOL;
 $game->showPoints($player1);
 $game->showPoints($dealer);
 

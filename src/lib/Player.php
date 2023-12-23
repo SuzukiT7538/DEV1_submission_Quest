@@ -10,7 +10,6 @@ class Player
     public array $calcPointArray = [0];
     public int $totalPoints = 0;
     public string $status = 'live';
-    public bool $hasA = false;
 
 
     public function __construct(public string $name)
@@ -26,10 +25,11 @@ class Player
         echo 'です' . PHP_EOL . PHP_EOL;
     }
 
-    public function hitOrNo(Deck $deck, Game $game): bool
+    public function hitOrStand(Deck $deck, Game $game): bool
     {
         echo 'もう一枚ひきますか？（Y/N）：';
         $choice = (trim(fgets(STDIN)));
+
         if (strcasecmp($choice, 'y') == 0) {
             $game->drawCards($deck, $this, 1);
             $continue = true;

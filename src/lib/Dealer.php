@@ -5,7 +5,7 @@ require_once('Player.php');
 class Dealer extends Player
 {
     public string $name = 'dealer';
-    public int $pointLimit = 17;
+    private int $pointLimit = 17;
     public function __construct()
     {
     }
@@ -20,21 +20,16 @@ class Dealer extends Player
         }
     }
 
-    public function hitOrNo(Deck $deck, Game $game): bool
+    public function hitOrStand(Deck $deck, Game $game): bool
     {
-        if ($this->totalPoints < 17) {
-            $choice = 'y';
-        } else {
-            echo 'ディーラーの得点が17点以上なので、ディーラーのターンを終了します。';
-            $choice = 'n';
-        }
-        if (strcasecmp($choice, 'y') == 0) {
+        if ($this->totalPoints < $this->pointLimit) {
             $game->drawCards($deck, $this, 1);
             $continue = true;
             if ($this->status !== 'live') {
                 $continue = false;
             }
         } else {
+            echo 'ディーラーの得点が17点以上なので、ディーラーのターンを終了します。';
             $continue = false;
         }
         fgets(STDIN);

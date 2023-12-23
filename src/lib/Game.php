@@ -1,20 +1,35 @@
 <?php
 
-require_once('Deck.php');
-require_once('Card.php');
+// require_once('Deck.php');
 
 class Game
 {
     private const BUST_LINE = 21;
+    public const MAX_CPU_QTY = 2;
+    public int $playersQty = 1;
+
+    public function joinCpu(): void
+    {
+        $continue = true;
+        while ($continue) {
+            echo 'CPUの数を選んでください（最大2人）：';
+            $joinedCpuQty = trim(fgets(STDIN));
+            $cpuQtyIsOver = $joinedCpuQty > Game::MAX_CPU_QTY;
+            $continue = false;
+            if ($cpuQtyIsOver) {
+                echo 'CPUは最大2人までです' . PHP_EOL . PHP_EOL;
+                $continue = true;
+            }
+        }
+        $this->playersQty += (int) $joinedCpuQty;
+        echo PHP_EOL;
+    }
 
     public function drawCards(Deck $deck, Player $player, int $drawCount): void
     {
         $drewCardNumbers = (array) array_rand($deck->pooledCards, $drawCount) ;
         foreach ($drewCardNumbers as $drewCardNumber) {
             $drewCard = $deck->pooledCards[$drewCardNumber];
-            if ($drewCard->number === 1) {
-                $player->hasA = true;
-            }
             $player->hands[] = $drewCard;
             unset($deck->pooledCards[$drewCardNumber]);
             $this->calcPoints($player, $drewCard);
@@ -53,7 +68,7 @@ class Game
             $player->totalPoints = 0;
             echo 'bustしました' . PHP_EOL;
         } elseif ($player->totalPoints === 21) {
-            echo $player->status = 'black jack' . PHP_EOL;
+            $player->status = 'black jack';
         }
     }
 
@@ -70,18 +85,18 @@ class Game
         echo PHP_EOL;
     }
 
-    public function judgeResult(Player $dealer, Player $player): void
+    public function judgeResult(array $players): void
     {
-        $winner = '';
-        if ($dealer->totalPoints > $player->totalPoints) {
-            $winner = $dealer->name;
-        } elseif ($dealer->totalPoints < $player->totalPoints) {
-            $winner = $player->name;
-        } elseif ($dealer->totalPoints === $player->totalPoints) {
-            echo '-PUSH-' . PHP_EOL;
-        }
-        if ($winner) {
-            echo $winner . ' WIN!!!!!' . PHP_EOL;
+        $dealer = $players[0];
+        for ($i = 1; $i <= $this->playersQty; $i++) {
+            $judgedPlayer = $players[$i];
+            if ($dealer->totalPoints > $judgedPlayer->totalPoints) {
+                echo $judgedPlayer->name . ' is Lose' . PHP_EOL;
+            } elseif ($dealer->totalPoints < $judgedPlayer->totalPoints) {
+                echo $judgedPlayer->name . ' is Win' . PHP_EOL;
+            } else {
+                echo $judgedPlayer->name . ' is Push' . PHP_EOL;
+            }
         }
     }
 }
